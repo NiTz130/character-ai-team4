@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Lịch sử chat | OpenCharacter</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { margin: 0; background: #19191a; color: #fff; font-family: 'Inter', sans-serif;}
+    .chatlist-container { max-width: 650px; margin: 60px auto; background: #24232f; border-radius: 16px; box-shadow: 0 0 20px #000a; padding: 36px 38px;}
+    h1 { color: #ffe44c; text-align: center; margin-bottom: 32px; }
+    .chatlist-row { display: flex; align-items: center; padding: 17px 0; border-bottom: 1px solid #333;}
+    .chatlist-avatar { width: 60px; height: 60px; border-radius: 18px; object-fit: cover; margin-right: 18px;}
+    .chatlist-info { flex: 1;}
+    .chatlist-name { font-weight: bold; font-size: 1.18em; color: #8f4ffb;}
+    .chatlist-date { color: #bbb; font-size: 0.99em;}
+    .chatlist-empty { padding: 40px; text-align: center; color: #aaa;}
+  </style>
+</head>
+<body>
+  <div class="chatlist-container">
+    <h1>Lịch sử trò chuyện</h1>
+    <div id="chatlistBox"></div>
+  </div>
+  <script>
+    fetch("api/chatlist.php")
+      .then(res => res.json())
+      .then(data => {
+        const box = document.getElementById("chatlistBox");
+        if (!data.success || !data.sessions.length) {
+          box.innerHTML = `<div class="chatlist-empty">Bạn chưa trò chuyện với nhân vật nào.</div>`;
+          return;
+        }
+        box.innerHTML = "";
+        data.sessions.forEach(sess => {
+          box.innerHTML += `
+            <div class="chatlist-row" onclick="window.location.href='chat.html?cid=${sess.session_id}'" style="cursor:pointer">
+              <img src="${sess.char_avatar}" class="chatlist-avatar">
+              <div class="chatlist-info">
+                <div class="chatlist-name">${sess.char_name}</div>
+                <div class="chatlist-date">Lần cuối: ${formatDatetime(sess.updated_at)}</div>
+              </div>
+            </div>`;
+        });
+      });
+
+    function formatDatetime(dt) {
+      const d = new Date(dt.replace(" ", "T"));
+      return d.toLocaleString('vi-VN');
+    }
+  </script>
+</body>
+</html>

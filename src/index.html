@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>OpenCharacter - Trang chủ</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { margin: 0; background: #19191a; color: #fff; font-family: 'Inter', sans-serif; }
+    .container { max-width: 1050px; margin: 0 auto; padding: 36px 0 70px 0; }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 38px;}
+    .logo { display: flex; align-items: center; gap: 13px; font-size: 2.1em; color: #ffe44c; font-weight: bold;}
+    .logo img { width: 54px; height: 54px; border-radius: 12px;}
+    .menu-btn { background: none; border: none; color: #ffe44c; font-size: 1.08em; cursor: pointer; margin-left: 17px;}
+    .add-btn { background: linear-gradient(90deg, #8f4ffb, #13e0dd); color: #fff; padding: 13px 27px; border-radius: 22px; font-size: 1.09em; border: none; font-weight: bold; cursor: pointer;}
+    .search-wrap {
+      display: flex; align-items: center; justify-content: center; gap: 0;
+      margin-bottom: 22px;
+    }
+    #searchInput {
+      padding: 11px 15px; border-radius: 22px 0 0 22px; border: none;
+      background: #232229; color: #fff; font-size: 1.03em; outline: none; width: 270px;
+    }
+    #searchBtn {
+      padding: 11px 22px; border-radius: 0 22px 22px 0; border: none;
+      background: #8f4ffb; color: #ffe44c; font-size: 1.15em; cursor: pointer; font-weight: bold;
+      transition: background .14s;
+    }
+    #searchBtn:hover { background: #6e35d1;}
+    .category-bar { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 38px; justify-content: center;}
+    .category-btn { background: #24232f; color: #fff; border: none; padding: 10px 26px; border-radius: 22px; font-size: 1.02em; cursor: pointer; transition: background .13s, color .13s;}
+    .category-btn.active, .category-btn:hover { background: #8f4ffb; color: #ffe44c;}
+    .character-list { display: flex; flex-wrap: wrap; gap: 34px; justify-content: flex-start; min-height: 180px;}
+    .character-card {
+      width: 210px; background: #28273a; border-radius: 15px; padding: 24px 16px 18px 16px;
+      cursor: pointer; box-shadow: 0 6px 20px #0003; transition: transform .13s, box-shadow .13s;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .character-card:hover { transform: translateY(-7px) scale(1.02); box-shadow: 0 12px 36px #8f4ffb33;}
+    .character-avatar { width: 75px; height: 75px; border-radius: 18px; object-fit: cover; margin-bottom: 13px;}
+    .character-name { font-weight: bold; color: #ffe44c; font-size: 1.15em; text-align: center;}
+    .character-intro { color: #ccc; font-size: 1.01em; margin-top: 7px; min-height: 37px; text-align: center;}
+    .empty-list { text-align: center; color: #bbb; margin: 65px 0 0 0; font-size: 1.13em;}
+    @media (max-width: 1100px) { .container {max-width: 99vw; padding: 14px 4vw 70px 4vw;} }
+    @media (max-width: 800px)  { .character-card { width: 90vw; max-width:340px; min-width: 150px; margin: 0 auto;} .character-list { justify-content: center;} }
+    @media (max-width: 600px)  { .container {padding: 8px 0 40px 0;} .header {flex-direction: column; gap:16px;} .category-bar {gap:9px;} #searchInput { width: 110px; font-size: 0.98em;}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <img src="assets/logo.png" alt="Logo"> OpenCharacter
+      </div>
+      <div>
+        <button class="add-btn" onclick="window.location.href='createcharacter.html'">+ Tạo nhân vật mới</button>
+        <button class="menu-btn" onclick="window.location.href='chatlist.html'">Lịch sử chat</button>
+        <button class="menu-btn" onclick="window.location.href='leaderboard.html'">Bảng xếp hạng</button>
+        <button class="menu-btn" onclick="window.location.href='profile.html'">Cá nhân</button>
+        <button class="menu-btn" onclick="logoutUser()">Đăng xuất</button>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Tìm kiếm nhân vật..." autocomplete="off">
+      <button id="searchBtn">🔍</button>
+    </div>
+    <div class="category-bar" id="categoryBar">
+      <button class="category-btn active">Tất cả</button>
+      <button class="category-btn">Thân thiện</button>
+      <button class="category-btn">Bí ẩn</button>
+      <button class="category-btn">Hài hước</button>
+      <button class="category-btn">Nghiêm túc</button>
+      <button class="category-btn">Thông thái</button>
+      <button class="category-btn">Lãng mạn</button>
+      <button class="category-btn">Triết lý</button>
+      <button class="category-btn">Lịch sử</button>
+      <button class="category-btn">Tương lai</button>
+      <button class="category-btn">Giả tưởng</button>
+      <button class="category-btn">Kinh dị</button>
+      <button class="category-btn">Tâm lý</button>
+      <button class="category-btn">Hành động</button>
+      <button class="category-btn">Người hướng dẫn</button>
+      <button class="category-btn">Phản diện</button>
+      <button class="category-btn">Anh hùng</button>
+      <button class="category-btn">Khác</button>
+    </div>
+    <div class="character-list" id="characterList"></div>
+    <div class="empty-list" id="emptyList" style="display:none;">Không có nhân vật nào.</div>
+  </div>
+  <script>
+    // Filter thể loại
+    document.querySelectorAll(".category-btn").forEach(btn => {
+      btn.addEventListener("click", function() {
+        document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        loadCharacters(btn.innerText, document.getElementById('searchInput').value);
+      });
+    });
+    // Khi tìm kiếm
+    document.getElementById('searchBtn').onclick = doSearch;
+    document.getElementById('searchInput').addEventListener('keydown', function(e){
+      if (e.key === "Enter") doSearch();
+    });
+    function doSearch() {
+      const q = document.getElementById('searchInput').value;
+      const cat = document.querySelector('.category-btn.active').innerText;
+      loadCharacters(cat, q);
+    }
+    // Load mặc định
+    loadCharacters("Tất cả", "");
+    function loadCharacters(category, q = "") {
+      fetch(`api/get_characters_by_category.php?category=${encodeURIComponent(category)}&q=${encodeURIComponent(q)}`)
+        .then(res => res.json())
+        .then(data => {
+          const list = document.getElementById("characterList");
+          const empty = document.getElementById("emptyList");
+          list.innerHTML = "";
+          if (!data.success || !data.characters.length) {
+            empty.style.display = "block";
+            return;
+          }
+          empty.style.display = "none";
+          data.characters.forEach(char => {
+            list.innerHTML += `
+              <div class="character-card" onclick="window.location.href='chat.html?character_id=${char.id}'">
+                <img src="${char.avatar}" class="character-avatar">
+                <div class="character-name">${char.name}</div>
+                <div class="character-intro">${char.intro || ''}</div>
+              </div>`;
+          });
+        });
+    }
+    function logoutUser() {
+      fetch("api/logout.php").then(() => window.location.href='login.html');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Bảng xếp hạng nhân vật | OpenCharacter</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { background: #19191a; color: #fff; font-family: 'Inter', sans-serif; }
+    .leaderboard-container { max-width: 700px; margin: 50px auto; background: #24232f; border-radius: 16px; box-shadow: 0 0 20px #0008; padding: 35px 40px; }
+    h1 { color: #ffe44c; font-size: 2em; text-align: center; margin-bottom: 30px; }
+    .lb-row { display: flex; align-items: center; padding: 18px 0; border-bottom: 1px solid #333; }
+    .lb-rank { width: 40px; text-align: center; font-size: 1.4em; font-weight: bold; color: #ffe44c; }
+    .lb-avatar { width: 66px; height: 66px; border-radius: 18px; object-fit: cover; margin-right: 20px; }
+    .lb-info { flex: 1; }
+    .lb-name { font-weight: bold; font-size: 1.2em; color: #8f4ffb; }
+    .lb-owner { color: #bbb; font-size: 0.95em; }
+    .lb-count { font-size: 1.1em; font-weight: bold; color: #ffe44c; }
+    .lb-header { display: flex; align-items: center; padding-bottom: 12px; border-bottom: 2px solid #ffe44c; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <div class="leaderboard-container">
+    <h1>Bảng xếp hạng nhân vật</h1>
+    <div class="lb-header">
+      <div class="lb-rank">#</div>
+      <div style="width:66px;"></div>
+      <div class="lb-info">Nhân vật</div>
+      <div class="lb-count">Lượt chat</div>
+    </div>
+    <div id="leaderboardList"></div>
+  </div>
+  <script>
+    fetch("api/leaderboard.php")
+      .then(res => res.json())
+      .then(data => {
+        const box = document.getElementById("leaderboardList");
+        if (!data.success || !data.characters.length) {
+          box.innerHTML = "<div style='padding:24px; text-align:center;'>Không có dữ liệu xếp hạng.</div>";
+          return;
+        }
+        box.innerHTML = "";
+        data.characters.forEach((char, idx) => {
+          box.innerHTML += `
+            <div class="lb-row">
+              <div class="lb-rank">${idx+1}</div>
+              <img src="${char.avatar}" class="lb-avatar">
+              <div class="lb-info">
+                <div class="lb-name">${char.name}</div>
+                <div class="lb-owner">Tác giả: ${char.owner}</div>
+              </div>
+              <div class="lb-count">${char.count}</div>
+            </div>`;
+        });
+      });
+  </script>
+</body>
+</html>

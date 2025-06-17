@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tạo nhân vật | OpenCharacter</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    .create-card {
+      background: #25232e;
+      border-radius: 32px;
+      padding: 50px 60px;
+      width: 100%;
+      max-width: 600px;
+      margin: 60px auto;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 24px #8f4ffb55;
+      color: #fff;
+    }
+    .char-avatar-wrap { position: relative; width: 140px; height: 140px; margin: 0 auto 40px auto; }
+    .char-avatar { width: 100%; height: 100%; object-fit: cover; border-radius: 24px; box-shadow: 0 4px 24px #8f4ffb33; }
+    .char-edit-avatar-btn { position: absolute; bottom: -10px; right: -10px; background: #8f4ffb; border-radius: 50%; padding: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.4); cursor: pointer; color: #fff; }
+    .form-group { margin-bottom: 28px; }
+    .form-group label { display: block; margin-bottom: 10px; font-weight: 700; font-size: 1.05em; }
+    .form-group input, .form-group textarea { width: 100%; padding: 14px 18px; border-radius: 16px; border: none; background: #191924; color: #fff; font-size: 1em; }
+    .count { text-align: right; font-size: 0.85em; color: #ccc; margin-top: 5px; }
+    .create-btn { width: 100%; padding: 16px; border: none; border-radius: 24px; font-weight: 700; font-size: 1.1em; background: linear-gradient(90deg, #8f4ffb, #13e0dd); color: #fff; cursor: pointer; box-shadow: 0 6px 18px #8f4ffb44; }
+    .create-btn:hover { background: linear-gradient(90deg, #13e0dd, #8f4ffb); transform: translateY(-2px); }
+    .top-bar { padding: 20px 40px; }
+    .back-home { background: none; border: none; color: #fff; font-size: 1.1em; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <button type="button" class="back-home" onclick="window.location.href='index.html'">⬅ Quay về trang chủ</button>
+  </div>
+
+  <form class="create-card" autocomplete="off" onsubmit="return submitCharacter()">
+    <div class="char-avatar-wrap">
+      <img src="assets/user.svg" class="char-avatar" id="charAvatar" alt="Avatar nhân vật">
+      <label for="avatarInput" class="char-edit-avatar-btn" title="Tải lên ảnh đại diện">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 15a4 4 0 1 1 8 0m-4-4V7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>
+        <input id="avatarInput" type="file" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label for="charName"><b>Tên nhân vật</b></label>
+      <input id="charName" maxlength="20" required placeholder="VD: Albert Einstein">
+      <div class="count" id="nameCount">0/20</div>
+    </div>
+
+    <div class="form-group">
+      <label for="charIntro"><b>Dòng giới thiệu</b></label>
+      <input id="charIntro" maxlength="50" placeholder="Thêm một dòng giới thiệu ngắn">
+      <div class="count" id="introCount">0/50</div>
+    </div>
+
+    <div class="form-group">
+      <label for="charDesc"><b>Mô tả</b></label>
+      <textarea id="charDesc" maxlength="500" placeholder="Nhân vật của bạn sẽ mô tả bản thân như thế nào?"></textarea>
+      <div class="count" id="descCount">0/500</div>
+    </div>
+
+    <div class="form-group">
+      <label for="charHello"><b>Xin chào</b></label>
+      <textarea id="charHello" maxlength="4096" placeholder="Lời chào mở đầu khi chat với nhân vật"></textarea>
+      <div class="count" id="helloCount">0/4096</div>
+    </div>
+
+    <button class="create-btn" type="submit">Tạo nhân vật</button>
+  </form>
+
+  <script>
+    let avatarBase64 = "";
+
+    function setCount(id, max) {
+      document.getElementById(id).oninput = e => {
+        document.getElementById(id.replace('char','').toLowerCase() + 'Count').innerText = e.target.value.length + "/" + max;
+      };
+    }
+    setCount("charName", 20); setCount("charIntro", 50); setCount("charDesc", 500); setCount("charHello", 4096);
+
+    function uploadAvatar(e) {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        document.getElementById('charAvatar').src = ev.target.result;
+        avatarBase64 = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function submitCharacter() {
+      const name = document.getElementById("charName").value.trim();
+      if (!name) return alert("Vui lòng nhập tên nhân vật");
+
+      const data = {
+        name: name,
+        intro: document.getElementById("charIntro").value.trim(),
+        description: document.getElementById("charDesc").value.trim(),
+        hello: document.getElementById("charHello").value.trim(),
+        avatar: avatarBase64
+      };
+
+      fetch("api/create_character.php", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          alert("Tạo nhân vật thành công!");
+          window.location.href = "index.html";
+        } else {
+          alert(res.error || "Lỗi khi tạo nhân vật");
+        }
+      })
+      .catch(() => alert("Lỗi kết nối server"));
+
+      return false;
+    }
+    function submitCharacter() {
+  const name = document.getElementById("charName").value.trim();
+  const intro = document.getElementById("charIntro").value.trim();
+  const description = document.getElementById("charDesc").value.trim();
+  const hello = document.getElementById("charHello").value.trim();
+  const avatarSrc = document.getElementById("charAvatar").src;
+  let avatarBase64 = null;
+
+  // Nếu là hình đã upload thì mới lấy base64
+  if (!avatarSrc.includes("user.svg")) {
+    avatarBase64 = avatarSrc;
+  }
+
+  fetch("api/createcharacter.php", {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name, intro, description, hello, avatar: avatarBase64
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert("Tạo nhân vật thành công!");
+      window.location.href = "index.html";
+    } else {
+      alert(data.error);
+    }
+  });
+
+  return false;
+}
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat | OpenCharacter</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/logo.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { margin: 0; background: #19191a; color: #fff; font-family: 'Inter', sans-serif; }
+    .chat-root { display: flex; height: 100vh; }
+    .chat-sidebar { width: 280px; background: #18171e; border-right: 1px solid #27243b; padding: 20px; overflow-y: auto; }
+    .back-btn { background: none; border: none; color: #fff; font-size: 1.1em; cursor: pointer; margin-bottom: 30px; }
+    .char-info { margin-bottom: 20px; }
+    .recent-title { font-size: 1.2em; font-weight: bold; margin-bottom: 16px; color: #ffe44c; }
+    .recent-item {
+      display: flex; align-items: center; padding: 10px; border-radius: 10px;
+      margin-bottom: 10px; background: #24232f; cursor: pointer; transition: 0.2s;
+    }
+    .recent-item:hover { background: #302f3c; }
+    .recent-avatar { width: 50px; height: 50px; border-radius: 14px; margin-right: 10px; object-fit: cover; }
+    .recent-name { font-weight: 600; }
+
+    .chat-main { flex: 1; display: flex; flex-direction: column; }
+    .chat-header { padding: 20px 30px; border-bottom: 1px solid #27243b; display: flex; align-items: center; gap: 20px; }
+    .char-header-avatar { width: 60px; height: 60px; border-radius: 16px; object-fit: cover; }
+    .char-header-name { font-weight: bold; font-size: 1.4em; color: #ffe44c; }
+
+    .chat-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+    .message-wrapper { display: flex; align-items: flex-start; gap: 12px; }
+    .message-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+    .message-bubble {
+      max-width: 75%; padding: 16px 20px; border-radius: 18px; font-size: 1.05em;
+    }
+    .user-bubble { background: #8f4ffb; margin-left: auto; border-bottom-right-radius: 4px; }
+    .bot-bubble { background: #2c2b36; margin-right: auto; border-bottom-left-radius: 4px; }
+
+    .chat-input-wrap { padding: 20px 30px; border-top: 1px solid #27243b; display: flex; gap: 10px; }
+    #chatInput { flex: 1; padding: 16px 20px; border-radius: 20px; border: none; background: #1b1b23; color: #fff; font-size: 1em; resize: none; }
+    #sendBtn { padding: 14px 24px; border: none; border-radius: 20px; background: linear-gradient(90deg, #8f4ffb, #13e0dd); font-weight: bold; color: #fff; cursor: pointer; }
+  </style>
+</head>
+
+<body>
+
+<div class="chat-root">
+
+  <div class="chat-sidebar">
+    <button class="back-btn" onclick="window.location.href='chatlist.html'">⬅ Quay về</button>
+    <div class="char-info">
+      <div class="recent-title">Nhân vật gần đây</div>
+      <div id="recentCharacters">Đang tải...</div>
+    </div>
+  </div>
+
+  <div class="chat-main">
+    <div class="chat-header">
+      <img src="assets/user.svg" class="char-header-avatar" id="charHeaderAvatar">
+      <div class="char-header-name" id="charHeaderName">Đang tải...</div>
+    </div>
+
+    <div class="chat-content" id="chatContent">Đang tải...</div>
+
+    <div class="chat-input-wrap">
+      <textarea id="chatInput" placeholder="Nhập tin nhắn..." rows="1"></textarea>
+      <button id="sendBtn">Gửi</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let session_id = null;
+let character_id = null;
+let charData = {};
+const chatInput = document.getElementById("chatInput");
+
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  character_id = urlParams.get("character_id");
+  session_id = urlParams.get("cid");
+
+  if (character_id) {
+    createSession(character_id);
+  } else if (session_id) {
+    loadSession(session_id);
+  } else {
+    alert("Không tìm thấy phiên chat");
+  }
+
+  loadRecentCharacters();
+});
+
+// Ấn Enter gửi tin nhắn:
+chatInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    document.getElementById("sendBtn").click();
+  }
+});
+
+function loadRecentCharacters() {
+  fetch("api/get_recent_characters.php")
+    .then(res => res.json())
+    .then(data => {
+      let html = "";
+      if (!data.success || data.characters.length === 0) {
+        html = "<div>Chưa có nhân vật</div>";
+      } else {
+        data.characters.forEach(char => {
+          html += `
+            <div class="recent-item" onclick="window.location.href='chat.html?character_id=${char.id}'">
+              <img src="${char.avatar}" class="recent-avatar">
+              <div class="recent-name">${char.name}</div>
+            </div>`;
+        });
+      }
+      document.getElementById("recentCharacters").innerHTML = html;
+    });
+}
+
+function createSession(charId) {
+  fetch("api/create_chat_session.php", {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ character_id: charId })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      session_id = data.session_id;
+      loadCharacter(data.character);
+      loadHistory();
+    } else {
+      alert(data.error);
+    }
+  });
+}
+
+function loadSession(sessId) {
+  fetch("api/get_session_info.php?session_id=" + sessId)
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      character_id = data.character.id;
+      session_id = data.session_id;
+      loadCharacter(data.character);
+      loadHistory();
+    } else {
+      alert(data.error);
+    }
+  });
+}
+
+function loadCharacter(char) {
+  charData = char;
+  document.getElementById("charHeaderName").innerText = char.name;
+  document.getElementById("charHeaderAvatar").src = char.avatar || "assets/user.svg";
+}
+
+function loadHistory() {
+  fetch("api/get_chat_history.php?session_id=" + session_id)
+  .then(res => res.json())
+  .then(data => {
+    const chatContent = document.getElementById("chatContent");
+    chatContent.innerHTML = "";
+    data.messages.forEach(msg => {
+      appendMessage(msg.sender, msg.message);
+    });
+  });
+}
+
+function appendMessage(sender, text) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "message-wrapper";
+
+  let avatar = sender === 'user' ? "assets/user.svg" : (charData.avatar || "assets/user.svg");
+  const avatarImg = `<img src="${avatar}" class="message-avatar">`;
+  const bubble = `<div class="message-bubble ${sender === 'user' ? 'user-bubble' : 'bot-bubble'}">${text}</div>`;
+
+  wrapper.innerHTML = sender === 'user' ? bubble + avatarImg : avatarImg + bubble;
+
+  document.getElementById("chatContent").appendChild(wrapper);
+  document.getElementById("chatContent").scrollTop = document.getElementById("chatContent").scrollHeight;
+}
+
+document.getElementById("sendBtn").onclick = () => {
+  const text = chatInput.value.trim();
+  if (!text) return;
+  appendMessage("user", text);
+  chatInput.value = "";
+
+  fetch("api/send_message.php", {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ session_id, message: text })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      appendMessage("bot", data.reply);
+    } else {
+      alert(data.error);
+    }
+  });
+};
+</script>
+
+</body>
+</html>
