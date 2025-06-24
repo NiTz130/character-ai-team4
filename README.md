@@ -51,6 +51,7 @@ Người dùng có thể tạo nhân vật với mô tả riêng, phân loại t
  - Clone dự án
  - Tạo database opencharacter trong MySQL
  - Cấu hình config.php
+   ```bash
     $db_user = 'root';
     $db_pass = '';
     $openai_api_key = 'sk-...'; // Thay bằng key GPT của bạn
