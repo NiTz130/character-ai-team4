@@ -18,7 +18,7 @@ Người dùng có thể tạo nhân vật với mô tả riêng, phân loại t
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## Công nghệ sử dụng
 
 | Thành phần | Công nghệ |
 |------------|-----------|
@@ -31,7 +31,7 @@ Người dùng có thể tạo nhân vật với mô tả riêng, phân loại t
 
 ---
 
-## 🗂️ Cấu trúc thư mục
+## Cấu trúc thư mục
 ```bash
 /
 ├── index.html              # Trang chính
