@@ -1,39 +1,69 @@
-# Web Project
+# OpenCharacter
 
-## Overview
-This is a simple web project that demonstrates the use of HTML, CSS, and JavaScript to create a dynamic and interactive webpage.
+Dự án Web App mô phỏng hệ thống tạo và trò chuyện với nhân vật ảo dựa trên trí tuệ nhân tạo GPT của OpenAI.  
+Người dùng có thể tạo nhân vật với mô tả riêng, phân loại tự động bằng AI, lưu lại lịch sử trò chuyện và trải nghiệm chat như ChatGPT.
 
-## Project Structure
-```
-web-project
-├── src
-│   ├── index.html        # Main HTML document
-│   ├── styles
-│   │   └── style.css     # Styles for the webpage
-│   └── scripts
-│       └── main.js       # JavaScript for interactivity
-├── package.json          # npm configuration file
-└── README.md             # Project documentation
-```
+---
 
-## Getting Started
+## Tính năng chính
 
-### Prerequisites
-- Node.js and npm should be installed on your machine.
+- Đăng ký / Đăng nhập / Quên mật khẩu
+- Tạo nhân vật ảo (avatar, mô tả, giới thiệu, lời chào)
+- Tự động phân loại thể loại nhân vật bằng GPT API
+- Trò chuyện với nhân vật theo thời gian thực
+- Ghi lại lịch sử chat, lọc theo nhân vật
+- Bảng xếp hạng các nhân vật phổ biến nhất
+- Giao diện responsive, dễ sử dụng
+- Quản lý hồ sơ người dùng (tên, avatar...)
 
-### Installation
-1. Clone the repository or download the project files.
-2. Navigate to the project directory in your terminal.
-3. Run `npm install` to install any dependencies (if applicable).
+---
 
-### Running the Project
-1. Open `src/index.html` in your web browser to view the project.
-2. You can also use a local server for better performance and to enable features like AJAX.
+## 🛠️ Công nghệ sử dụng
 
-## Features
-- Responsive design using CSS.
-- Interactive elements handled by JavaScript.
-- Clean and organized project structure.
+| Thành phần | Công nghệ |
+|------------|-----------|
+| Frontend   | HTML, CSS, JS (vanilla), AJAX |
+| Backend    | PHP 8.x (REST API) |
+| Database   | MySQL |
+| AI API     | OpenAI GPT (Chat Completion API) |
+| Session    | PHP Session |
+| File upload | Avatar user và character (base64 hoặc file) |
 
-## Contributing
-Feel free to fork the repository and submit pull requests for any improvements or features you would like to add.
+---
+
+## 🗂️ Cấu trúc thư mục
+/
+├── index.html              # Trang chính
+├── createcharacter.html    # Tạo nhân vật
+├── chat.html               # Giao diện chat
+├── chatlist.html           # Lịch sử chat
+├── leaderboard.html        # Bảng xếp hạng
+├── profile.html            # Hồ sơ người dùng
+├── login/register/...      # Các trang xác thực
+├── api/                    # Toàn bộ API RESTful
+├── uploads/                # Lưu avatar người dùng
+├── css/style.css           # CSS chính
+
+---
+
+## Cài đặt nhanh (Localhost)
+ - Clone dự án
+ - Tạo database opencharacter trong MySQL
+ - Cấu hình config.php
+    $db_user = 'root';
+    $db_pass = '';
+    $openai_api_key = 'sk-...'; // Thay bằng key GPT của bạn
+ - Mở bằng XAMPP hoặc PHP server
+
+---
+
+## Tác giả
+Tên: Nguyễn Lê Đức Bình & Đinh Hoàng Phú
+
+Lớp: 26TH01
+
+Giáo viên hướng dẫn: ThS. Trần Thịnh Mạnh Đức
+
+Đồ án môn: Lập trình website (Web Programming)
+
+
