@@ -32,6 +32,7 @@ Người dùng có thể tạo nhân vật với mô tả riêng, phân loại t
 ---
 
 ## 🗂️ Cấu trúc thư mục
+```bash
 /
 ├── index.html              # Trang chính
 ├── createcharacter.html    # Tạo nhân vật
@@ -43,7 +44,7 @@ Người dùng có thể tạo nhân vật với mô tả riêng, phân loại t
 ├── api/                    # Toàn bộ API RESTful
 ├── uploads/                # Lưu avatar người dùng
 ├── css/style.css           # CSS chính
-
+```
 ---
 
 ## Cài đặt nhanh (Localhost)
