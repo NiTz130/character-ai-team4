@@ -13,14 +13,7 @@
 
 ## 📸 Demo
 
-> Thêm screenshot vào `docs/screenshots/` rồi cập nhật link bên dưới.
-
-```markdown
-![Home](docs/screenshots/home.png)
-![Create character](docs/screenshots/create.png)
-![Chat](docs/screenshots/chat.png)
-![Leaderboard](docs/screenshots/leaderboard.png)
-```
+> Screenshots sẽ được thêm sau. Khi có, đặt file vào `docs/screenshots/` rồi tham chiếu ở đây.
 
 ---
 
