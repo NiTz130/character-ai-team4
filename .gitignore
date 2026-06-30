@@ -1,0 +1,36 @@
+# PHP
+*.log
+*.tmp
+error_log
+access_log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# XAMPP / Local config
+api/config.local.php
+.env
+.env.local
+
+# Uploads — chứa avatar user (không commit)
+uploads/
+!uploads/.gitkeep
+
+# Build artifacts
+dist/
+build/
+node_modules/
+
+# OS
+*.bak
+*.orig
+*~
+
+# Composer (nếu có vendor/)
+vendor/
+composer.phar
